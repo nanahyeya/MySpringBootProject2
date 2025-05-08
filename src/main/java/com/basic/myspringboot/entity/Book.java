@@ -8,7 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 
-Entity
+@Entity
 @Table(name = "books")
 @Getter @Setter
 @DynamicUpdate
