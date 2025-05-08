@@ -1,5 +1,7 @@
 package com.basic.myspringboot.controller;
 
+// 브라우저를 통해 매핑 확인
+
 import com.basic.myspringboot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
