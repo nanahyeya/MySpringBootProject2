@@ -31,6 +31,6 @@ public class Book {
     @CreationTimestamp
     private LocalDate publishDate = LocalDate.now();
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private int price;
 }
