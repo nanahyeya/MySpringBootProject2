@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -40,13 +42,44 @@ public class BookRepositoryTest {
 
         //Then (검증 단계)
         assertThat(addBook1).isNotNull();
-        assertThat(addBook1.getCustomerName()).isEqualTo("스프링2");
+        assertThat(addBook2).isNotNull();
 
     }
 
     @Test
     void testFindByIsbn() {
+        Optional<Book> optionalBook1 = bookRepository.findByIsbn("9788956746425");
+        Book book1 = optionalBook1.orElseGet(() -> new Book());
+        assertThat(book1.getBookTitle()).isEqualTo("스프링 부트 입문");
 
+        Optional<Book> optionalBook2 = bookRepository.findByIsbn("9788956746432");
+        Book book2 = optionalBook1.orElseGet(() -> new Book());
+        assertThat(book1.getBookTitle()).isEqualTo("JPA 프로그래밍");
+    }
 
+    @Test
+    void testFindByAuthor() {
+        Optional<Book> optionalBook1 = bookRepository.findByAuthor("홍길동");
+        Book book1 = optionalBook1.orElseGet(() -> new Book());
+        assertThat(book1.getBookTitle()).isEqualTo("스프링 부트 입문");
+
+        Optional<Book> optionalBook2 = bookRepository.findByAuthor("박둘리");
+        Book book2 = optionalBook1.orElseGet(() -> new Book());
+        assertThat(book1.getBookTitle()).isEqualTo("JPA 프로그래밍");
+    }
+
+    @Test
+    @Rollback(value = false)
+    void testUpdateBook() {
+        Book book = bookRepository.findByIsbn("9788956746425").orElseThrow(() -> new RuntimeException("Book Not Found"));
+        book.setBookTitle("김나혜");
+        assertThat(nook.getBookTitle()).isEqualTo("김나혜");
+    }
+
+    @Test
+    @Rollback(value = false)
+    void testDeleteBook() {
+        Book book = bookRepository.findByIsbn("9788956746425").orElseThrow(() -> new RuntimeException("Book Not Found"));
+        bookRepository.delete(book);
     }
 }
