@@ -1,7 +1,6 @@
 package com.basic.myspringboot.repository;
 
 import com.basic.myspringboot.entity.Book;
-import com.basic.myspringboot.entity.Customer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
