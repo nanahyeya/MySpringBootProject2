@@ -1,6 +1,7 @@
 package com.basic.myspringboot.controller;
 
 import com.basic.myspringboot.entity.User;
+import com.basic.myspringboot.exception.BusinessException;
 import com.basic.myspringboot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -52,5 +53,13 @@ public class UserRestController {
         // lambda 형식으로 작성
 //        return optionalUser.map(ResponseEntity::ok)
 //                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/email/{email}")
+    public User getUserByEmail(@PathVariable String email) {
+        Optional<User> optionalUser = userRepository.findByEmail((email));
+        User existUser =
+                optionalUser.orElseThrow(() -> new BusinessException("User Not Found", HttpStatus.NOT_FOUND));
+        return existUser;
     }
 }
