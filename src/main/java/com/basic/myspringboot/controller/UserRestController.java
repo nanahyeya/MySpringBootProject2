@@ -3,6 +3,9 @@ package com.basic.myspringboot.controller;
 import com.basic.myspringboot.entity.User;
 import com.basic.myspringboot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +18,7 @@ import java.util.Optional;
 //final 인 변수를 초기화하는 생성자를 자동으로 생성해주는 역할을 하는 롬복 어노테이션
 @RequestMapping("/api/users")
 public class UserRestController {
+    private static final Logger log = LoggerFactory.getLogger(UserRestController.class);
     private final UserRepository userRepository;
 
     //Constructor Injection
@@ -39,12 +43,14 @@ public class UserRestController {
         // public <U> Optional <U> map(Function<? super T, ?  extends U> mapper)
         // Function의 추상메서드 R apply(T t)
         // Optional<ResponseEntity>
-//        ResponseEntity<User> responseEntity = optionalUser
-//                .map(user -> ResponseEntity.ok(user)) //User가 있는 경우 200 status code
+        ResponseEntity<User> responseEntity = optionalUser
+                .map(user -> ResponseEntity.ok(user)) //User가 있는 경우 200 status code
 //                .orElse(ResponseEntity.notFound().build()); // User가 없는 경우 404 status code
-//        return responseEntity;
+                .orElse(new ResponseEntity("User Not Found", HttpStatus.NOT_FOUND)); // Error 메세지 출력
+        return responseEntity;
 
-        return optionalUser.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        // lambda 형식으로 작성
+//        return optionalUser.map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.notFound().build());
     }
 }
