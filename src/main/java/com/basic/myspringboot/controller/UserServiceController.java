@@ -5,6 +5,7 @@ import com.basic.myspringboot.entity.User;
 import com.basic.myspringboot.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,14 +17,10 @@ public class UserServiceController {
     private final UserService userService;
 
     @PostMapping
-    public UserDTO.UserResponse create(@Valid @RequestBody
+    public ResponseEntity<UserDTO.UserResponse> create(@Valid @RequestBody
                                        UserDTO.UserCreateRequest request) {
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-
-        User savedUser = userService.createUser(user);
-        return new UserDTO.UserResponse(savedUser);
+        UserDTO.UserResponse createdUser = userService.createUser(request);
+        return ResponseEntity.ok(createdUser);
     }
 
     @GetMapping
@@ -43,9 +40,17 @@ public class UserServiceController {
         return new UserDTO.UserResponse(existUser);
     }
 
-    @GetMapping("/email/{email}")
-    public UserDTO.UserResponse getUserByEmail(@PathVariable String email) {
-        return new UserDTO.UserResponse((userService.getUserByEmail(email)));
+    @GetMapping("/email/{email}/")
+    public UserDTO.UserResponse getUserByEmail(@PathVariable String email){
+        return new UserDTO.UserResponse(userService.getUserByEmail(email));
+    }
+
+    @PatchMapping("/{email}")
+    public UserDTO.UserResponse updateUser(@PathVariable String email,
+                                           @Valid @RequestBody UserDTO.UserUpdateRequest useDetail){
+
+        User updatedUser = userService.updateUserByEmail(email, useDetail);
+        return new UserDTO.UserResponse(updatedUser);
     }
 
 

@@ -1,5 +1,6 @@
 package com.basic.myspringboot.service;
 
+import com.basic.myspringboot.controller.dto.UserDTO;
 import com.basic.myspringboot.entity.User;
 import com.basic.myspringboot.exception.BusinessException;
 import com.basic.myspringboot.repository.UserRepository;
@@ -13,14 +14,22 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+
 //읽기전용모드 (성능 최적화)
 public class UserService {
     private final UserRepository userRepository;
 
     //등록
     @Transactional
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public User createUser(UserDTO.UserCreateRequest request) {
+        //email 중복 검사
+        userRepository.findByEmail(request.getEmail())
+                .ifPresent(user -> {
+                    throw new BusinessException("User with this Email already exist", HttpStatus.CONFLICT);
+                });
+        User user = request.toEntity();
+        User savedUser = userRepository.save(user);
+        return new UserDTO.UserResponse(savedUser);
     }
 
     public User getUserById(Long id) {
