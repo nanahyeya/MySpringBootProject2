@@ -18,12 +18,11 @@ public class UserInfoUserDetails implements UserDetails {
 
     public UserInfoUserDetails(UserInfo userInfo) {
         this.userInfo = userInfo;
-        // 엔티티의 이메일을 username 변수에 저장
+        //엔티티의 이메일을 username 변수에 저장
         this.email=userInfo.getEmail();
-
-        // 엔티티의 패스워드를 password 변수에 저장
+        //엔티티의 패스워드를 password 변수에 저장
         this.password=userInfo.getPassword();
-        this.authorities= Arrays.stream(userInfo.getRoles().split(","))
+        this.authorities= Arrays.stream(userInfo.getRoles().split(",")) // ['ADMIN', 'USER', ...]
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
@@ -33,14 +32,14 @@ public class UserInfoUserDetails implements UserDetails {
         return authorities;
     }
 
-    //  AutoenticationManager가 인증 처리 시 호출함
     @Override
+    //AuthenticationManager 가 인증을 처리할 때 사용함
     public String getPassword() {
         return password;
     }
 
-    //  AutoenticationManager가 인증 처리 시 호출함
     @Override
+    //AuthenticationManager 가 인증을 처리할 때 사용함
     public String getUsername() {
         return email;
     }
