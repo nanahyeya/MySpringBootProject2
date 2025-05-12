@@ -5,6 +5,7 @@ import com.basic.myspringboot.entity.User;
 import com.basic.myspringboot.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class UserServiceController {
 
     @PostMapping
     public ResponseEntity<UserDTO.UserResponse> create(@Valid @RequestBody
-                                       UserDTO.UserCreateRequest request) {
+                                                       UserDTO.UserCreateRequest request) {
         UserDTO.UserResponse createdUser = userService.createUser(request);
         return ResponseEntity.ok(createdUser);
     }
@@ -26,11 +27,11 @@ public class UserServiceController {
     @GetMapping
     public List<UserDTO.UserResponse> getUsers() {
         return userService.getAllUsers()
-                // List<Users> => Stream<User>
+                //List<User> => Stream<User>
                 .stream()
-                // User -> UserDTO.UserResponse
+                //User -> UserDTO.UserResponse
                 .map(user -> new UserDTO.UserResponse(user))
-                // .map(UserDTO.UserResponse::new)
+                //.map(UserDTO.UserResponse::new)
                 .toList();
     }
 
@@ -46,12 +47,17 @@ public class UserServiceController {
     }
 
     @PatchMapping("/{email}")
-    public UserDTO.UserResponse updateUser(@PathVariable String email,
-                                           @Valid @RequestBody UserDTO.UserUpdateRequest useDetail){
+    public ResponseEntity<UserDTO.UserResponse> updateUser(@PathVariable String email,
+                                                           @Valid @RequestBody UserDTO.UserUpdateRequest useDetail){
 
-        User updatedUser = userService.updateUserByEmail(email, useDetail);
-        return new UserDTO.UserResponse(updatedUser);
+        UserDTO.UserResponse updatedUser = userService.updateUserByEmail(email, useDetail);
+        return ResponseEntity.ok(updatedUser);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }

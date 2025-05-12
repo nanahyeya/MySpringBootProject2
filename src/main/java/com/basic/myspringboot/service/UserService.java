@@ -14,19 +14,19 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-
 //읽기전용모드 (성능 최적화)
 public class UserService {
     private final UserRepository userRepository;
 
     //등록
     @Transactional
-    public User createUser(UserDTO.UserCreateRequest request) {
-        //email 중복 검사
-        userRepository.findByEmail(request.getEmail())
-                .ifPresent(user -> {
-                    throw new BusinessException("User with this Email already exist", HttpStatus.CONFLICT);
-                });
+    public UserDTO.UserResponse createUser(UserDTO.UserCreateRequest request) {
+        //Email 중복검사
+        userRepository.findByEmail(request.getEmail()) //Optional<User>
+                .ifPresent(
+                        user -> {
+                            throw new BusinessException("User with this Email already Exist",HttpStatus.CONFLICT);
+                        });
         User user = request.toEntity();
         User savedUser = userRepository.save(user);
         return new UserDTO.UserResponse(savedUser);
@@ -43,12 +43,12 @@ public class UserService {
 
     //수정
     @Transactional
-    public User updateUserByEmail(String email, User userDetail) {
+    public UserDTO.UserResponse updateUserByEmail(String email, UserDTO.UserUpdateRequest userDetail) {
         User user = getUserByEmail(email);
         //dirty read
         user.setName(userDetail.getName());
         //return userRepository.save(user);
-        return user;
+        return new UserDTO.UserResponse(user);
     }
 
     public User getUserByEmail(String email) {
