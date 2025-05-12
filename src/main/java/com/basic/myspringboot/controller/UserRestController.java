@@ -37,13 +37,13 @@ public class UserRestController {
     }
 
     @GetMapping
-    // 관리자만 권한이 있는 사용자만 목록 조회할 수 있음
+    //관리자(Admin) 권한이 있는 사용자만 목록조회를 할 수 있음
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    // 일반 사용자 (USer)
+    //일반사용자(User) 권한이 있는 사용자만 목록조회를 할 수 있음
     @PreAuthorize("hasAuthority('ROLE_USER')")
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id){
